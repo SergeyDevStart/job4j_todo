@@ -1,9 +1,6 @@
 package ru.job4j.todo.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -12,6 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "tasks")
+@Builder
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +17,5 @@ public class Task {
     private String title;
     private String description;
     private LocalDateTime created = LocalDateTime.now().withNano(0);
-    private Boolean done;
+    private boolean done;
 }

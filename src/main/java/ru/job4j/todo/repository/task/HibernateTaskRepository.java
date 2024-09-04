@@ -44,7 +44,7 @@ public class HibernateTaskRepository implements TaskRepository {
                     .setParameter("title", task.getTitle())
                     .setParameter("description", task.getDescription())
                     .setParameter("created", task.getCreated())
-                    .setParameter("done", task.getDone())
+                    .setParameter("done", task.isDone())
                     .setParameter("id", task.getId());
             isUpdated = query.executeUpdate() > 0;
             session.getTransaction().commit();
