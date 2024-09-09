@@ -24,8 +24,8 @@ public class HibernateTaskService implements TaskService {
     }
 
     @Override
-    public void deleteById(Integer id) {
-        hibernataTaskRepository.deleteById(id);
+    public boolean deleteById(Integer id) {
+        return hibernataTaskRepository.deleteById(id);
     }
 
     @Override
@@ -49,8 +49,7 @@ public class HibernateTaskService implements TaskService {
     }
 
     @Override
-    public void complete(Task task) {
-        task.setDone(true);
-        hibernataTaskRepository.update(task);
+    public boolean changeStatus(Integer id) {
+        return hibernataTaskRepository.changeStatus(id);
     }
 }

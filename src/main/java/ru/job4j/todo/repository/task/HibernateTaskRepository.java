@@ -37,12 +37,11 @@ public class HibernateTaskRepository implements TaskRepository {
         try {
             session.beginTransaction();
             isUpdated = session.createQuery("""
-                    UPDATE Task SET title = :title, description = :description, created = :created, done = :done
+                    UPDATE Task SET title = :title, description = :description, done = :done
                     WHERE id = :id
                     """)
                     .setParameter("title", task.getTitle())
                     .setParameter("description", task.getDescription())
-                    .setParameter("created", task.getCreated())
                     .setParameter("done", task.isDone())
                     .setParameter("id", task.getId())
                     .executeUpdate() > 0;
@@ -56,19 +55,41 @@ public class HibernateTaskRepository implements TaskRepository {
     }
 
     @Override
-    public void deleteById(Integer id) {
+    public boolean  changeStatus(Integer id) {
         var session = sf.openSession();
+        boolean isUpdated = false;
         try {
             session.beginTransaction();
-            session.createQuery("DELETE Task WHERE id = :id")
+            isUpdated = session.createQuery(
+                    "UPDATE Task SET done = true WHERE id = :id"
+                    )
                     .setParameter("id", id)
-                    .executeUpdate();
+                    .executeUpdate() > 0;
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
         } finally {
             session.close();
         }
+        return isUpdated;
+    }
+
+    @Override
+    public boolean deleteById(Integer id) {
+        var session = sf.openSession();
+        boolean isDeleted = false;
+        try {
+            session.beginTransaction();
+            isDeleted = session.createQuery("DELETE Task WHERE id = :id")
+                    .setParameter("id", id)
+                    .executeUpdate() > 0;
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+        return isDeleted;
     }
 
     @Override
