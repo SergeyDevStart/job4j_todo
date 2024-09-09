@@ -2,7 +2,6 @@ package ru.job4j.todo.repository.task;
 
 import lombok.AllArgsConstructor;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
 
@@ -37,16 +36,16 @@ public class HibernateTaskRepository implements TaskRepository {
         boolean isUpdated = false;
         try {
             session.beginTransaction();
-            Query<Task> query = session.createQuery("""
+            isUpdated = session.createQuery("""
                     UPDATE Task SET title = :title, description = :description, created = :created, done = :done
                     WHERE id = :id
-                    """, Task.class)
+                    """)
                     .setParameter("title", task.getTitle())
                     .setParameter("description", task.getDescription())
                     .setParameter("created", task.getCreated())
                     .setParameter("done", task.isDone())
-                    .setParameter("id", task.getId());
-            isUpdated = query.executeUpdate() > 0;
+                    .setParameter("id", task.getId())
+                    .executeUpdate() > 0;
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();

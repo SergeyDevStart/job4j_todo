@@ -47,4 +47,10 @@ public class HibernateTaskService implements TaskService {
     public Collection<Task> findCompleted() {
         return hibernataTaskRepository.findCompleted();
     }
+
+    @Override
+    public void complete(Task task) {
+        task.setDone(true);
+        hibernataTaskRepository.update(task);
+    }
 }

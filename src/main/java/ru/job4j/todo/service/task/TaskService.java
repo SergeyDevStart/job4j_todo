@@ -19,4 +19,6 @@ public interface TaskService {
     Collection<Task> findNew();
 
     Collection<Task> findCompleted();
+
+    void complete(Task task);
 }

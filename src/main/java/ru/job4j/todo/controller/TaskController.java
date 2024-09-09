@@ -32,6 +32,17 @@ public class TaskController {
             return "errors/error";
         }
         model.addAttribute("task", taskOptional.get());
+        return "tasks/one";
+    }
+
+    @GetMapping("/{id}/update")
+    public String update(Model model, @PathVariable("id") Integer id) {
+        var taskOptional = hibernateTaskService.findById(id);
+        if (taskOptional.isEmpty()) {
+            model.addAttribute("message", "Задание не найдено");
+            return "errors/error";
+        }
+        model.addAttribute("task", taskOptional.get());
         return "tasks/update";
     }
 
@@ -48,6 +59,17 @@ public class TaskController {
             model.addAttribute("message", e.getMessage());
             return "errors/error";
         }
+    }
+
+    @GetMapping("/complete/{id}")
+    public String done(Model model, @PathVariable("id") Integer id) {
+        var taskOptional = hibernateTaskService.findById(id);
+        if (taskOptional.isEmpty()) {
+            model.addAttribute("message", "Задание не найдено");
+            return "errors/error";
+        }
+        hibernateTaskService.complete(taskOptional.get());
+        return "redirect:/tasks";
     }
 
     @GetMapping("/delete/{id}")
