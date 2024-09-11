@@ -14,7 +14,7 @@ public class HibernateTaskService implements TaskService {
     private final TaskRepository hibernataTaskRepository;
 
     @Override
-    public Task create(Task task) {
+    public Optional<Task> create(Task task) {
         return hibernataTaskRepository.create(task);
     }
 
