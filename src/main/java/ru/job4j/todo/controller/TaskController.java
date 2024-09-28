@@ -4,8 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.job4j.todo.model.Task;
+import ru.job4j.todo.dto.TaskDto;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.priority.PriorityService;
 import ru.job4j.todo.service.task.TaskService;
 
 import javax.servlet.http.HttpSession;
@@ -15,17 +16,19 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/tasks")
 public class TaskController {
     private final TaskService hibernateTaskService;
+    private final PriorityService hibernatePriorityService;
 
     @GetMapping("/create")
-    public String create() {
+    public String create(Model model) {
+        model.addAttribute("priorities", hibernatePriorityService.findAll());
         return "tasks/create";
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task, Model model, HttpSession session) {
+    public String create(@ModelAttribute TaskDto taskDto, Model model, HttpSession session) {
         var user = (User) session.getAttribute("user");
-        task.setUser(user);
-        var savedTask = hibernateTaskService.create(task);
+        taskDto.setUser(user);
+        var savedTask = hibernateTaskService.create(taskDto);
         if (savedTask.isEmpty()) {
             model.addAttribute("message", "Не удалось создать задачу");
             return "errors/error";
@@ -51,14 +54,15 @@ public class TaskController {
             model.addAttribute("message", "Задание не найдено");
             return "errors/error";
         }
+        model.addAttribute("priorities", hibernatePriorityService.findAll());
         model.addAttribute("task", taskOptional.get());
         return "tasks/update";
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Task task, Model model) {
+    public String update(@ModelAttribute TaskDto taskDto, Model model) {
         try {
-            boolean isUpdated = hibernateTaskService.update(task);
+            boolean isUpdated = hibernateTaskService.update(taskDto);
             if (!isUpdated) {
                 model.addAttribute("message", "Не удалось обновить задачу");
                 return "errors/error";
