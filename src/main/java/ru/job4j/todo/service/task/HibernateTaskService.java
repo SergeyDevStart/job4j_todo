@@ -4,11 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.job4j.todo.dto.TaskDto;
 import ru.job4j.todo.mappers.TaskMapper;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.repository.category.CategoryRepository;
 import ru.job4j.todo.repository.priority.PriorityRepository;
 import ru.job4j.todo.repository.task.TaskRepository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,6 +19,7 @@ import java.util.Optional;
 public class HibernateTaskService implements TaskService {
     private final TaskRepository hibernataTaskRepository;
     private final PriorityRepository hibernatePriorityRepository;
+    private final CategoryRepository hibernateCategoryRepository;
     private final TaskMapper taskMapper;
 
     @Override
@@ -61,7 +65,9 @@ public class HibernateTaskService implements TaskService {
     private Task getTaskFromTaskDto(TaskDto taskDto) {
         Task task = taskMapper.toTask(taskDto);
         var priority = hibernatePriorityRepository.findById(taskDto.getPriorityId()).orElseThrow();
+        List<Category> categories = hibernateCategoryRepository.findAllByIds(taskDto.getCategoryIds());
         task.setPriority(priority);
+        task.setCategories(categories);
         return task;
     }
 }

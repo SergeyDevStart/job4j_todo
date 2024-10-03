@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.dto.TaskDto;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.category.CategoryService;
 import ru.job4j.todo.service.priority.PriorityService;
 import ru.job4j.todo.service.task.TaskService;
 
@@ -17,10 +18,12 @@ import javax.servlet.http.HttpSession;
 public class TaskController {
     private final TaskService hibernateTaskService;
     private final PriorityService hibernatePriorityService;
+    private final CategoryService hibernateCategoryService;
 
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("priorities", hibernatePriorityService.findAll());
+        model.addAttribute("categories", hibernateCategoryService.findAll());
         return "tasks/create";
     }
 
@@ -55,6 +58,7 @@ public class TaskController {
             return "errors/error";
         }
         model.addAttribute("priorities", hibernatePriorityService.findAll());
+        model.addAttribute("categories", hibernateCategoryService.findAll());
         model.addAttribute("task", taskOptional.get());
         return "tasks/update";
     }

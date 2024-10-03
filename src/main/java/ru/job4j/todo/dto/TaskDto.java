@@ -4,6 +4,7 @@ import lombok.*;
 import ru.job4j.todo.model.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,4 +18,5 @@ public class TaskDto {
     private boolean done;
     private User user;
     private Integer priorityId;
+    private List<Integer> categoryIds;
 }
