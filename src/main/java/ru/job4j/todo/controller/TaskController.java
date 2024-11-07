@@ -99,20 +99,23 @@ public class TaskController {
     }
 
     @GetMapping
-    public String getAll(Model model) {
-        model.addAttribute("tasks", hibernateTaskService.findAll());
+    public String getAll(Model model, HttpSession session) {
+        var user = (User) session.getAttribute("user");
+        model.addAttribute("tasks", hibernateTaskService.taskWrapper(hibernateTaskService.findAll(), user));
         return "tasks/list";
     }
 
     @GetMapping("/completed")
-    public String getCompleted(Model model) {
-        model.addAttribute("tasks", hibernateTaskService.findCompleted());
+    public String getCompleted(Model model, HttpSession session) {
+        var user = (User) session.getAttribute("user");
+        model.addAttribute("tasks", hibernateTaskService.taskWrapper(hibernateTaskService.findCompleted(), user));
         return "tasks/list";
     }
 
     @GetMapping("/new")
-    public String getNew(Model model) {
-        model.addAttribute("tasks", hibernateTaskService.findNew());
+    public String getNew(Model model, HttpSession session) {
+        var user = (User) session.getAttribute("user");
+        model.addAttribute("tasks", hibernateTaskService.taskWrapper(hibernateTaskService.findNew(), user));
         return "tasks/list";
     }
 }

@@ -16,6 +16,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    @Column(name = "user_zone")
+    private String timezone;
     @EqualsAndHashCode.Include
     private String login;
     private String password;
